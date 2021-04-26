@@ -5,6 +5,4 @@ numpy
 matplotlib
 plotly
 seaborn
-gc
-warnings
 pandas-profiling
