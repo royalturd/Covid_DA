@@ -65,4 +65,7 @@ for country in containers:
     df["%Inc Deaths"] = df["New Deaths"]/df["Total Deaths"]*100
     df["%Inc Recovered"] = df["New Recovered"]/df["Total Recovered"]*100
 
+    df.sort_values("Total Cases", axis = 0, ascending = False,
+                 inplace = True, na_position ='first')
+
     print(df)
