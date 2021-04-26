@@ -3,6 +3,15 @@ from datetime import datetime , date
 from urllib.request import Request, urlopen
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as pyplot
+import plotly.graph_objects as graph_objects
+import plotly.offline as py
+import plotly.express as px
+import seaborn as sns
+import gc
+import warnings
+warnings.filterwarnings("ignore")
+from pandas_profiling import ProfileReport
 
 today = datetime.now()
 
@@ -68,4 +77,13 @@ for country in containers:
     df.sort_values("Total Cases", axis = 0, ascending = False,
                  inplace = True, na_position ='first')
 
-    print(df)
+cases = df[["Total Recovered", "Active Cases", "Total Deaths"]].loc[0]
+cases_df = pd.DataFrame(cases).reset_index()
+cases_df.columns = ["Type", "Total"]
+
+cases_df["Percentage"] = np.round(100*cases_df["Total"]/np.sum(cases_df["Total"]), 3)
+cases_df["Virus Type"] = ["COVID-19" for i in range(len(cases_df))]  # |-_-|
+fig = px.bar(cases_df, x = "Virus Type", y = "Percentage", color = "Type", hover_data = ["Total"])
+
+fig.show()
+
