@@ -51,7 +51,18 @@ for country in containers:
 
 
     df = pd.DataFrame(all_data)
-    print(df.head())
-        
-            
+    df.drop([15, 16, 17, 18, 19, 20], inplace = True, axis = 1)
 
+    column_labels = ["Country", "Total Cases", "New Cases", "Total Deaths", "New Deaths", "Total Recovered", "Active Cases", "Critical", "Total Cases/1M", "New Recovered", "Deaths/1M", "Total Test", "Test/1M", "Population", "Continent"]
+
+    df.columns =  column_labels
+
+    for label in df.columns:
+        if label != 'Country' and label != "Continent":
+         df[label] = pd.to_numeric(df[label])
+
+    df["%Inc Cases"] = df["New Cases"]/df["Total Cases"]*100
+    df["%Inc Deaths"] = df["New Deaths"]/df["Total Deaths"]*100
+    df["%Inc Recovered"] = df["New Recovered"]/df["Total Recovered"]*100
+
+    print(df)
