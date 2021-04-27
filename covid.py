@@ -7,6 +7,7 @@ import matplotlib.pyplot as pyplot
 import plotly.graph_objects as graph_objects
 import plotly.offline as py
 import plotly.express as px
+import plotly.graph_objs as go
 import seaborn as sns
 import gc
 import warnings
@@ -83,7 +84,39 @@ cases_df.columns = ["Type", "Total"]
 
 cases_df["Percentage"] = np.round(100*cases_df["Total"]/np.sum(cases_df["Total"]), 3)
 cases_df["Virus Type"] = ["COVID-19" for i in range(len(cases_df))]  # |-_-|
-fig = px.bar(cases_df, x = "Virus Type", y = "Percentage", color = "Type", hover_data = ["Total"])
+fig_total = px.bar(cases_df, x = "Virus Type", y = "Percentage", color = "Type", hover_data = ["Total"])
+# fig_total.show()
+# print(fig_total)
 
-fig.show()
+perc = np.round(df[["%Inc Cases", "%Inc Deaths", "%Inc Recovered"]].loc[0], 2)
 
+perc_df = pd.DataFrame(perc)
+perc_df.columns = ["Percentage"]
+
+fig_perc = px.bar(x = perc_df.index, y = perc_df["Percentage"], color = ["%Inc Cases", "%Inc Deaths", "%Inc Recovered"])
+
+# fig_perc.show()
+# print(perc_df)
+
+# continent
+
+
+continent_df = df.groupby("Continent").sum().drop("All")
+print(continent_df)
+def continent_viz(v_list):
+    for label in v_list:
+        c_df = continent_df[['Continent',label]]
+        c_df['Percentage'] = np.round(100*c_df[label]/ np.sum(c_df[label]), 2)
+        c_df["Virus Type"] = ["COVID-19" for i in range(len(c_df))]  # |-_-|
+        fig_con = px.bar(cases_df, x = "Virus Type", y = "Percentage", color = "Continent", hover_data = ["label"])
+        fig_con.update_layout(title = {"text":label})
+        fig_con.show()
+        print(continent_df)
+
+cases_list = ["Total Cases", "New Cases","Active Cases", "Critical", "Total Cases/1M" ]
+
+deaths_list = ["Total Deaths", "New Deaths", "Deaths/1M"]
+
+recov_list = ["Total Recovered", "New Recovered", "%Inc Recovered"]
+
+continent_viz(cases_list)
