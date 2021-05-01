@@ -9,7 +9,6 @@ import plotly.offline as py
 import plotly.express as px
 import plotly.graph_objs as go
 import seaborn as sns
-import gc
 import warnings
 warnings.filterwarnings("ignore")
 from pandas_profiling import ProfileReport
@@ -100,23 +99,7 @@ fig_perc = px.bar(x = perc_df.index, y = perc_df["Percentage"], color = ["%Inc C
 
 # continent
 
-
 continent_df = df.groupby("Continent").sum().drop("All")
+continent_df = pd.DataFrame(continent_df).reset_index()
 print(continent_df)
-def continent_viz(v_list):
-    for label in v_list:
-        c_df = continent_df[['Continent',label]]
-        c_df['Percentage'] = np.round(100*c_df[label]/ np.sum(c_df[label]), 2)
-        c_df["Virus Type"] = ["COVID-19" for i in range(len(c_df))]  # |-_-|
-        fig_con = px.bar(cases_df, x = "Virus Type", y = "Percentage", color = "Continent", hover_data = ["label"])
-        fig_con.update_layout(title = {"text":label})
-        fig_con.show()
-        print(continent_df)
 
-cases_list = ["Total Cases", "New Cases","Active Cases", "Critical", "Total Cases/1M" ]
-
-deaths_list = ["Total Deaths", "New Deaths", "Deaths/1M"]
-
-recov_list = ["Total Recovered", "New Recovered", "%Inc Recovered"]
-
-continent_viz(cases_list)
